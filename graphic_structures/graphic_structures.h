@@ -139,6 +139,7 @@ public:
                                                     z_ (end.z_ - start.z_) {};
     Point vec_to_point () {return Point (x_, y_, z_);};
 
+    void rotate (double deg);
     Vector operator *  (const Vector &vec)const; //векторное произведение
     Vector operator +  (const Vector &vec)const;
     Vector operator += (const Vector &vec);

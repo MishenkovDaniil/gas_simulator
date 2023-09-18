@@ -50,6 +50,20 @@ void Point::update (double x, double y, double z)
     z_ = z;
 }
 
+void Vector::rotate (double deg)
+{  
+    double radians = deg * 3.14 / 180.0;
+    
+    double deg_cos = cos (radians);
+    double deg_sin = sin (radians);
+    
+    double x = x_;
+    double y = y_;
+
+    x_ = deg_cos * x - deg_sin * y; ///(cos_a + sin_a * i) * (x + y * i) = (cos_a * x - sin_a * y) + (y * cos_a + sin_a * x)
+    y_ = deg_cos * y + deg_sin * x;
+}
+
 Vector Vector::operator * (const Vector &vec) const
 {
     return Vector (y_ * vec.z_ - z_ * vec.y_, x_ * vec.z_ - z_ * vec.x_, x_ * vec.y_ - y_ * vec.x_);
