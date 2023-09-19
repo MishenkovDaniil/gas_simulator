@@ -48,5 +48,6 @@ Wall *Walls::contains (Point &obj)
             return walls[idx];
         }
     }
+    
     return nullptr;
 }

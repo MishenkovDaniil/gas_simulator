@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <cassert>
+#include <SFML/Graphics.hpp>
 
+// #include "../buttons/buttons.h"
 #include "../graphic_structures/graphic_structures.h"
+
 
 class Wall 
 {
@@ -56,5 +59,20 @@ public:
     void draw () {for (int i = 0; i < size_; ++i) walls[i]->draw (*texture_);};
     void update_piston_height (int new_height) {for (int i = 0; i < size_; ++i) walls[i]->update (new_height);}
 };
+
+
+// class Move_piston_button : public Button 
+// {
+//     Piston *piston_ = nullptr;
+//     const double delta_height = 1;
+
+// public:
+//     Move_piston_button (Piston &piston, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use) :
+//                                                         piston_ (&piston),
+//                                                         Button (lh_corner, rl_corner, color, string, button_use){};
+//     ~Move_piston_button () {};
+
+//     bool run (Point &object, sf::Keyboard::Key key) override;
+// };
 
 #endif /* ENVIRONMENT_H */
