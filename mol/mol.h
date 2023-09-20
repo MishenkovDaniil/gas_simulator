@@ -6,9 +6,6 @@
 #include <cassert>
 #include <SFML/Graphics.hpp>
 
-// class Walls;
-// class Wall;
-
 #include "../environment/environment.h"
 #include "../graphic_structures/graphic_structures.h"
 
@@ -19,6 +16,13 @@ static const int INIT_LIST_CAPACITY = 100;
 // static const double LOAD_FACTOR = 0.7;
 static const double INIT_SPEED = 1;
 static const double MOL_SIDE_SIZE = 15;
+
+//TODO 
+//button interface through my textures
+//temperature changing (causes speed to change)
+//fix wall collide  
+//make buttons aside from screen
+//make graphics
 
 enum Mol_types 
 {
@@ -63,6 +67,7 @@ public:
 
     Vector move () {pos_ += v_ && (speed_ *DT); return pos_;};
     virtual void draw (sf::RenderTexture &texture) const;
+    virtual Mol_types get_type () const {return EMPTY_MOL;};
 };
 
 class Round_mol : public Mol
@@ -77,6 +82,7 @@ public:
     ~Round_mol () {};
 
     void draw (sf::RenderTexture &texture) const override;
+    Mol_types get_type () const override {return ROUND_MOL;};
 };
 
 class Square_mol : public Mol
@@ -90,13 +96,13 @@ public:
     ~Square_mol () {};
 
     void draw (sf::RenderTexture &texture) const override;
+    Mol_types get_type () const override {return SQUARE_MOL;};
 };
 
 class Mol_manager
 {
     //TODO 
     //connect mols with list.h 
-    //delete allocated mem and make alloc with new 
     Mol **mols = nullptr;
     Walls walls;
 
