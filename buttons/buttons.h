@@ -12,12 +12,12 @@
 class Button 
 {
 protected:
-    Point lh_corner_ = Point (0, 0, 0); /// z coord is not used!!!
-    Point rl_corner_ = Point (0, 0, 0); /// z coord is not used!!!
+    Point lh_corner_ = Point (0, 0); /// z coord is not used!!!
+    Point rl_corner_ = Point (0, 0); /// z coord is not used!!!
     
-    Color color_                 = Color ();
-    Color pressed_button_color   = Color ();
-    Color unpressed_button_color = Color ();
+    Color color_                = Color ();
+    Color pressed_button_color  = Color ();
+    Color released_button_color = Color ();
     
     int  button_use_ = NONE; //
     bool is_pressed_ = false;
@@ -32,7 +32,7 @@ public:
                                                         rl_corner_             (rl_corner),
                                                         button_use_            (button_use),//
                                                         color_                 (color),
-                                                        unpressed_button_color (color),
+                                                        released_button_color (color),
                                                         pressed_button_color   (pressed_button_clr.a_ ? pressed_button_clr : color),
                                                         is_pressed_            (false)
                                                         
@@ -76,12 +76,12 @@ private:
 
 class Piston_button : public Button 
 {
-    Piston *piston_ = nullptr;
+    Mol_manager *mol_manager_ = nullptr;
     const double delta_height = 1;
 
 public:
-    Piston_button (Piston &piston, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, Color pressed_button_clr = Color (0, 0, 0,0)) :
-                                                        piston_ (&piston),
+    Piston_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, Color pressed_button_clr = Color (0, 0, 0,0)) :
+                                                        mol_manager_ (&mol_manager),
                                                         Button (lh_corner, rl_corner, color, string, button_use, pressed_button_clr){};
     ~Piston_button () {};
 

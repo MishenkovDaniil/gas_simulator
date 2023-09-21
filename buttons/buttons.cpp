@@ -48,7 +48,7 @@ void Button::update (bool is_pressed)
     }                                 
     else 
     {
-        color_ = unpressed_button_color;
+        color_ = released_button_color;
     }   
     is_pressed_ = is_pressed;
 }
@@ -126,13 +126,15 @@ bool Piston_button::run (Point &object, sf::Keyboard::Key key)
     {
         case sf::Keyboard::Key::Up:
         {
-            piston_->update (piston_->left_high_.y_ - delta_height);
+            mol_manager_->update_height (delta_height);
             // is_pressed_ = false;
             break;
         }
         case sf::Keyboard::Key::Down:
         {
-            piston_->update (piston_->left_high_.y_ + delta_height);
+            // piston_->update (-delta_height);
+            mol_manager_->update_height (-delta_height);
+
             // is_pressed_ = false;
             break;
         }
