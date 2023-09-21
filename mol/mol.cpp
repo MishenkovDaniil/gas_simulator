@@ -388,9 +388,13 @@ void Mol::draw (sf::RenderTexture &texture) const
     ;
 }
 
-bool Mol_manager::update_temperature (double new_temp)
+bool Mol_manager::update_temperature (double delta_temp)
 {
-    if (new_temp < 0)
+    //TODO
+    //if temp  == 0 --> mols speed == 0
+    double new_temp = temperature_ + delta_temp;
+
+    if (new_temp < MIN_TEMP || new_temp > MAX_TEMP)
         return false;
     
     double mult_coeff = sqrt (new_temp / temperature_);
