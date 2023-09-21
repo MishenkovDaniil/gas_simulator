@@ -406,6 +406,7 @@ bool Mol_manager::update_temperature (double new_temp)
     temperature_ = new_temp;
 }
 
+
 Mol_manager::~Mol_manager ()
 {
     for (int i = 0; i < size_; ++i) 
