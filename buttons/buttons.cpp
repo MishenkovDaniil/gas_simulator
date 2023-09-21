@@ -168,3 +168,38 @@ bool Round_mol_button::run (Point &object, sf::Keyboard::Key key)
 
     return true;
 }
+
+bool Temp_button::run (Point &object, sf::Keyboard::Key key)
+{
+    if (is_pressed_ == false)
+        return false;
+
+    fprintf (stderr, "called");
+    fprintf (stderr, "%d\n", key);
+    fprintf (stderr, "%d\n", sf::Keyboard::Key::Add);
+
+    switch (key)
+    {
+        case sf::Keyboard::Key::Up:
+        {
+            fprintf (stderr, "add\n");
+            mol_manager_->update_temperature (delta_temp);
+            // is_pressed_ = false;
+            break;
+        }
+        case sf::Keyboard::Key::Down:
+        {
+            // piston_->update (-delta_height);
+            mol_manager_->update_temperature (-delta_temp);
+
+            // is_pressed_ = false;
+            break;
+        }
+        default:
+        {
+            return false;
+        }
+    }
+
+    return true;
+}

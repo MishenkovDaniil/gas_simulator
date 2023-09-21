@@ -116,4 +116,18 @@ public:
     bool run (Point &object, sf::Keyboard::Key key) override;
 };
 
+class Temp_button : public Button
+{
+    Mol_manager *mol_manager_ = nullptr;
+    const double delta_temp = 10;
+
+public:
+    Temp_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, Color pressed_button_clr = Color (0, 0, 0,0)) :
+                                                        mol_manager_ (&mol_manager),
+                                                        Button (lh_corner, rl_corner, color, string, button_use, pressed_button_clr){};
+    ~Temp_button () {};
+
+    bool run (Point &object, sf::Keyboard::Key key) override;
+};
+
 #endif /* BUTTONS_H */
