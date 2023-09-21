@@ -3,6 +3,30 @@
 
 #include "mol.h"
 
+bool Mol::update_speed (double new_speed)
+{
+    if (new_speed < 0)
+        return false;
+    speed_ = new_speed;
+    
+    // fprintf (stderr, "speed = %lf\n", speed_);
+
+    return true;
+}
+
+
+Mol_manager::Mol_manager (sf::RenderTexture &texture, int width, int height, Point piston_lh)
+:   texture_ (&texture),
+    walls (Walls(texture)),
+    width_ (width),
+    height_ (height)
+{ 
+    width_shift_ = piston_lh.x_;
+    height_shift_ -= piston_lh.y_;
+
+    mols = (Mol **)calloc (100, sizeof (Mol *));capacity_ = 100;
+}
+
 void Mol_manager::add (Mol *mol)
 {
     if ((double)size_ / (double) capacity_ > LOAD_FACTOR)
@@ -107,7 +131,7 @@ bool Mol_manager::create (int size, enum Mol_types type)
             for (int i = 0; i < size; ++i)
             {
                 Mol *mol = new Square_mol();
-                *mol = (Square_mol (INIT_SPEED, 1, Color (0, 255, 0, 255), 800, 800));
+                *mol = (Square_mol (INIT_SPEED, 1, Color (0, 255, 0, 255), width_, height_, width_shift_, height_shift_));
                 add (mol);
             }
             break;
@@ -117,7 +141,7 @@ bool Mol_manager::create (int size, enum Mol_types type)
             for (int i = 0; i < size; ++i)
             {
                 Mol *mol = new Round_mol();
-                *mol = (Round_mol (INIT_SPEED, 1, Color (255, 0, 0, 255), 800, 800));
+                *mol = (Round_mol (INIT_SPEED, 1, Color (255, 0, 0, 255), width_, height_,  width_shift_, height_shift_));
                 add (mol);
             }
             break;
@@ -127,6 +151,14 @@ bool Mol_manager::create (int size, enum Mol_types type)
     }
 
     return true;
+}
+
+void Mol_manager::update_height (int delta_height)
+{
+    height_ += delta_height; 
+    height_ = height_ < 0 ? 0 : height_;
+    height_shift_ += delta_height; 
+    walls.update_piston_height (delta_height);
 }
 
 bool Mol_manager::create (int size, enum Mol_types type, double speed, double mass, Color &color, Vector &v, Vector &pos)
@@ -176,6 +208,31 @@ void Mol_manager::add_wall (Wall *wall)
 
 bool Mol_manager::collide (Mol *mol1, Mol *mol2)
 {
+    // assert (mol1 && mol2);
+
+    // static const collide_mols *v_collide_tab[2][2] = 
+    //     {
+    //         {collide_squares, collide_square_round},
+    //         {collide_round_square, collide_rounds}
+    //     };
+    
+    // Mol_types mol1_type = mol1->get_type ();
+    // Mol_types mol2_type = mol2->get_type ();
+
+    // if ( mol1_type == EMPTY_MOL || mol2_type == EMPTY_MOL)
+    // {
+    //     fprintf (stderr, "gg");
+    //     return false;
+    // }
+    // bool res = v_collide_tab[mol1_type - 1][mol2_type - 1];
+
+    // if (res == false)
+    //     return false;
+    // remove (mol1);
+    // remove (mol2);
+
+    // return true;
+
     if (mol1->type == SQUARE_MOL && mol2->type == SQUARE_MOL)
     {      
         if (collide_squares (mol1, mol2) == false)
@@ -205,6 +262,7 @@ bool Mol_manager::collide (Mol *mol1, Mol *mol2)
     return true;
 }
 
+// bool collide_squares (Mol_manager &manager, Mol *mol1, Mol *mol2)
 bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
 {
     Color color (255, 0, 0, 255);
@@ -223,6 +281,7 @@ bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
 
         for (int i = 0; i < no_of_round_mols; ++i)
         {
+            //manager.
             create (1, ROUND_MOL, (mol1->speed_ + mol2->speed_) / 2, 1.0, color, v, new_mol_pos);
             v.rotate (360.0 / no_of_round_mols);
             new_mol_pos = collide_pos + v; 
@@ -233,6 +292,7 @@ bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
     return false;
 }
 
+// bool collide_rounds (Mol_manager &manager, Mol *mol1, Mol *mol2)
 bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
 {
     Color color (0, 255, 0, 255);
@@ -246,6 +306,7 @@ bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
         Vector v = (mol1->v_ && mol1->mass_) + (mol2->v_ && mol2->mass_);
         Vector pos = (mol1->pos_ + mol2->pos_) && 0.5;
 
+        // manager.
         create (1, SQUARE_MOL, (mol1->speed_ + mol2->speed_) / (int)(mol1->mass_ + mol2->mass_), mol1->mass_ + mol2->mass_, color, v, pos);
         // m = 1 + 1 
         return true;
@@ -254,6 +315,13 @@ bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
     return false;
 }
 
+// bool collide_round_square (Mol_manager &manager, Mol *mol1, Mol *mol2)
+bool Mol_manager::collide_round_square (Mol *mol1, Mol *mol2)
+{
+    return collide_square_round (mol2, mol1);
+}
+
+// bool collide_square_round (Mol_manager &manager, Mol *mol1, Mol *mol2)
 bool Mol_manager::collide_square_round (Mol *mol1, Mol *mol2)
 {
     Color color (0, 255, 0, 255);
@@ -279,6 +347,7 @@ bool Mol_manager::collide_square_round (Mol *mol1, Mol *mol2)
         double new_mol_mass = mol1->mass_ + mol2->mass_;
         double speed = (mol1->speed_ * mol1->mass_ + mol2->speed_ * mol2->mass_) / new_mol_mass;
 
+        // manager.
         create (1, SQUARE_MOL, speed, new_mol_mass, color, v, pos); // m= m + 1
 
         return true;
@@ -310,12 +379,31 @@ void Square_mol::draw (sf::RenderTexture &texture) const
 
 void Mol::draw (sf::RenderTexture &texture) const 
 {
-    sf::CircleShape circle_mol (10);
-    circle_mol.setFillColor ((sf::Color)color_);
-    circle_mol.setOutlineThickness (1);
-    circle_mol.setPosition (pos_.x_, pos_.y_);
+    // sf::CircleShape circle_mol (10);
+    // circle_mol.setFillColor ((sf::Color)color_);
+    // circle_mol.setOutlineThickness (1);
+    // circle_mol.setPosition (pos_.x_, pos_.y_);
     
-    texture.draw (circle_mol);
+    // texture.draw (circle_mol);
+    ;
+}
+
+bool Mol_manager::update_temperature (double new_temp)
+{
+    if (new_temp < 0)
+        return false;
+    
+    double mult_coeff = sqrt (new_temp / temperature_);
+
+    for (int idx = 0; idx < size_; ++idx)
+    {
+        Mol *mol = *(mols + idx);
+        mol->update_speed (mol->get_speed () * mult_coeff);
+    }
+
+    update_height (0.3 * (height_ * mult_coeff - height_));
+
+    temperature_ = new_temp;
 }
 
 Mol_manager::~Mol_manager ()
