@@ -205,65 +205,33 @@ void Mol_manager::add_wall (Wall *wall)
 
 bool Mol_manager::collide (Mol *mol1, Mol *mol2)
 {
-    // assert (mol1 && mol2);
+    assert (mol1 && mol2);
 
-    // static const collide_mols *v_collide_tab[2][2] = 
-    //     {
-    //         {collide_squares, collide_square_round},
-    //         {collide_round_square, collide_rounds}
-    //     };
+    static const collide_mols *v_collide_tab[2][2] = 
+        {
+            {collide_squares, collide_square_round},
+            {collide_round_square, collide_rounds}
+        };
     
-    // Mol_types mol1_type = mol1->get_type ();
-    // Mol_types mol2_type = mol2->get_type ();
+    Mol_types mol1_type = mol1->get_type ();
+    Mol_types mol2_type = mol2->get_type ();
 
-    // if ( mol1_type == EMPTY_MOL || mol2_type == EMPTY_MOL)
-    // {
-    //     fprintf (stderr, "gg");
-    //     return false;
-    // }
-    // bool res = v_collide_tab[mol1_type - 1][mol2_type - 1];
-
-    // if (res == false)
-    //     return false;
-    // remove (mol1);
-    // remove (mol2);
-
-    // return true;
-
-    if (mol1->type == SQUARE_MOL && mol2->type == SQUARE_MOL)
-    {      
-        if (collide_squares (mol1, mol2) == false)
-            return false;
-    }
-    else if (mol1->type == ROUND_MOL && mol2->type == ROUND_MOL)
+    if ( mol1_type == EMPTY_MOL || mol2_type == EMPTY_MOL)
     {
-        if (collide_rounds (mol1, mol2) == false)
-            return false;
+        return false;
     }
-    else 
-    {
-        //CHECK IF ALWAYS WORKS PROPERLY
-        bool res = false;
-        if (mol1->type == ROUND_MOL)
-            res = collide_square_round(mol1, mol2);
-        else
-            res = collide_square_round (mol2, mol1);
+    bool res = v_collide_tab[mol1_type - 1][mol2_type - 1] (*this, mol1, mol2);
 
-        if (res == false)
-            return false;
-    }
-    
+    if (res == false)
+        return false;
     remove (mol1);
     remove (mol2);
 
     return true;
 }
 
-// bool collide_squares (Mol_manager &manager, Mol *mol1, Mol *mol2)
-bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
+bool collide_squares (Mol_manager &manager, Mol *mol1, Mol *mol2)
 {
-    // Color color (255, 0, 0, 255);
-
     const double SIDE = ((Square_mol *)mol1)->SIDE_SIZE;
     Point center_1 (mol1->pos_.x_ + SIDE, mol1->pos_.y_ + SIDE);
     Point center_2 (mol2->pos_.x_ + SIDE, mol2->pos_.y_ + SIDE);
@@ -278,8 +246,7 @@ bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
 
         for (int i = 0; i < no_of_round_mols; ++i)
         {
-            //manager.
-            create (1, ROUND_MOL, (mol1->speed_ + mol2->speed_) / 2, 1.0, ROUND_COLOR, v, new_mol_pos);
+            manager.create (1, ROUND_MOL, (mol1->speed_ + mol2->speed_) / 2, 1.0, ROUND_COLOR, v, new_mol_pos);
             v.rotate (360.0 / no_of_round_mols);
             new_mol_pos = collide_pos + v; 
         }
@@ -289,11 +256,8 @@ bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
     return false;
 }
 
-// bool collide_rounds (Mol_manager &manager, Mol *mol1, Mol *mol2)
-bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
+bool collide_rounds (Mol_manager &manager, Mol *mol1, Mol *mol2)
 {
-    // Color color (0, 255, 0, 255);
-
     const double R = ((Round_mol *)mol1)->RADIUS;
     Point center_1 (mol1->pos_.x_ + R, mol1->pos_.y_ + R);
     Point center_2 (mol2->pos_.x_ + R, mol2->pos_.y_ + R);
@@ -303,8 +267,7 @@ bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
         Vector v = (mol1->v_ && mol1->mass_) + (mol2->v_ && mol2->mass_);
         Vector pos = (mol1->pos_ + mol2->pos_) && 0.5;
 
-        // manager.
-        create (1, SQUARE_MOL, (mol1->speed_ + mol2->speed_) / (int)(mol1->mass_ + mol2->mass_), mol1->mass_ + mol2->mass_, SQUARE_COLOR, v, pos);
+        manager.create (1, SQUARE_MOL, (mol1->speed_ + mol2->speed_) / (int)(mol1->mass_ + mol2->mass_), mol1->mass_ + mol2->mass_, SQUARE_COLOR, v, pos);
         // m = 1 + 1 
         return true;
     }
@@ -312,17 +275,13 @@ bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
     return false;
 }
 
-// bool collide_round_square (Mol_manager &manager, Mol *mol1, Mol *mol2)
-bool Mol_manager::collide_round_square (Mol *mol1, Mol *mol2)
+bool collide_round_square (Mol_manager &manager, Mol *mol1, Mol *mol2)
 {
-    return collide_square_round (mol2, mol1);
+    return collide_square_round (manager, mol2, mol1);
 }
 
-// bool collide_square_round (Mol_manager &manager, Mol *mol1, Mol *mol2)
-bool Mol_manager::collide_square_round (Mol *mol1, Mol *mol2)
+bool collide_square_round (Mol_manager &manager, Mol *mol1, Mol *mol2)
 {
-    // Color color (0, 255, 0, 255);
-    
     const double R = ((Round_mol *)mol1)->RADIUS;           //think about making static
     const double SIDE = ((Square_mol *)mol2)->SIDE_SIZE;    //the same
     Point center_1 (mol1->pos_.x_ + R, mol1->pos_.y_ + R);
@@ -344,8 +303,7 @@ bool Mol_manager::collide_square_round (Mol *mol1, Mol *mol2)
         double new_mol_mass = mol1->mass_ + mol2->mass_;
         double speed = (mol1->speed_ * mol1->mass_ + mol2->speed_ * mol2->mass_) / new_mol_mass;
 
-        // manager.
-        create (1, SQUARE_MOL, speed, new_mol_mass, SQUARE_COLOR, v, pos); // m= m + 1
+        manager.create (1, SQUARE_MOL, speed, new_mol_mass, SQUARE_COLOR, v, pos); // m= m + 1
 
         return true;
     }

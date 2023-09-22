@@ -11,7 +11,7 @@
 
 class Mol;
 class Mol_manager;
-// typedef bool collide_mols (Mol_manager &manager, Mol *mol1, Mol *mol2);
+typedef bool collide_mols (Mol_manager &manager, Mol *mol1, Mol *mol2);
 
 // #include "../list.h"
 static const double MOL_RADIUS = 10;
@@ -26,10 +26,7 @@ static const int MIN_TEMP = 0;
 static const Color SQUARE_COLOR = Color (105, 85, 50, 255);
 static const Color ROUND_COLOR  = Color (140, 215, 130, 255);
 //TODO 
-//button interface through my textures
-//temperature changing (causes speed to change)
 //fix wall collide  (and wall draw)
-//make buttons aside from screen
 //make graphics
 
 enum Mol_types 
@@ -153,17 +150,12 @@ public:
 private:
     bool check_collisions ();
     bool collide (Mol *mol1, Mol *mol2);
-    bool collide_rounds (Mol *mol1, Mol *mol2);
-    bool collide_squares (Mol *mol1, Mol *mol2);
-    bool collide_square_round (Mol *mol1, Mol *mol2);
-    bool collide_round_square (Mol *mol1, Mol *mol2);
-
     void wall_collide (Mol *mol, Wall *wall);
 };
 
-// bool collide_rounds (Mol_manager &manager, Mol *mol1, Mol *mol2);
-// bool collide_squares (Mol_manager &manager, Mol *mol1, Mol *mol2);
-// bool collide_square_round (Mol_manager &manager, Mol *mol1, Mol *mol2);
-// bool collide_round_square (Mol_manager &manager, Mol *mol1, Mol *mol2);
+bool collide_rounds (Mol_manager &manager, Mol *mol1, Mol *mol2);
+bool collide_squares (Mol_manager &manager, Mol *mol1, Mol *mol2);
+bool collide_square_round (Mol_manager &manager, Mol *mol1, Mol *mol2);
+bool collide_round_square (Mol_manager &manager, Mol *mol1, Mol *mol2);
 
 #endif /* MOL_H */
