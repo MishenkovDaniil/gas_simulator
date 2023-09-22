@@ -18,12 +18,13 @@ static const double MOL_RADIUS = 10;
 static const double DT = 0.1;
 static const int INIT_LIST_CAPACITY = 100;
 // static const double LOAD_FACTOR = 0.7;
-static const double INIT_SPEED = 10;
+static const double INIT_SPEED = 1;
 static const double MOL_SIDE_SIZE = 15;
 static const int INIT_TEMP = 273 + 25;
 static const int MAX_TEMP = 273 + 300;
 static const int MIN_TEMP = 0;
-
+static const Color SQUARE_COLOR = Color (105, 85, 50, 255);
+static const Color ROUND_COLOR  = Color (140, 215, 130, 255);
 //TODO 
 //button interface through my textures
 //temperature changing (causes speed to change)
@@ -143,7 +144,7 @@ public:
     void draw ();
     bool move ();
     bool create (int size, enum Mol_types type);
-    bool create (int size, enum Mol_types type, double speed, double mass, Color &color, Vector &v, Vector &pos);
+    bool create (int size, enum Mol_types type, double speed, double mass, const Color &color, Vector &v, Vector &pos);
     void update_height (int delta_height);
     void remove (Mol *mol);
     bool update_temperature (double delta_temp);

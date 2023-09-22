@@ -9,11 +9,8 @@ bool Mol::update_speed (double new_speed)
         return false;
     speed_ = new_speed;
     
-    // fprintf (stderr, "speed = %lf\n", speed_);
-
     return true;
 }
-
 
 Mol_manager::Mol_manager (sf::RenderTexture &texture, int width, int height, Point piston_lh)
 :   texture_ (&texture),
@@ -131,7 +128,7 @@ bool Mol_manager::create (int size, enum Mol_types type)
             for (int i = 0; i < size; ++i)
             {
                 Mol *mol = new Square_mol();
-                *mol = (Square_mol (INIT_SPEED, 1, Color (0, 255, 0, 255), width_, height_, width_shift_, height_shift_));
+                *mol = (Square_mol (INIT_SPEED, 1, SQUARE_COLOR, width_, height_, width_shift_, height_shift_));
                 add (mol);
             }
             break;
@@ -141,7 +138,7 @@ bool Mol_manager::create (int size, enum Mol_types type)
             for (int i = 0; i < size; ++i)
             {
                 Mol *mol = new Round_mol();
-                *mol = (Round_mol (INIT_SPEED, 1, Color (255, 0, 0, 255), width_, height_,  width_shift_, height_shift_));
+                *mol = (Round_mol (INIT_SPEED, 1, ROUND_COLOR, width_, height_,  width_shift_, height_shift_));
                 add (mol);
             }
             break;
@@ -161,7 +158,7 @@ void Mol_manager::update_height (int delta_height)
     walls.update_piston_height (delta_height);
 }
 
-bool Mol_manager::create (int size, enum Mol_types type, double speed, double mass, Color &color, Vector &v, Vector &pos)
+bool Mol_manager::create (int size, enum Mol_types type, double speed, double mass, const Color &color, Vector &v, Vector &pos)
 {
     if (size < 1 || type == EMPTY_MOL)
         return false;
@@ -265,7 +262,7 @@ bool Mol_manager::collide (Mol *mol1, Mol *mol2)
 // bool collide_squares (Mol_manager &manager, Mol *mol1, Mol *mol2)
 bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
 {
-    Color color (255, 0, 0, 255);
+    // Color color (255, 0, 0, 255);
 
     const double SIDE = ((Square_mol *)mol1)->SIDE_SIZE;
     Point center_1 (mol1->pos_.x_ + SIDE, mol1->pos_.y_ + SIDE);
@@ -282,7 +279,7 @@ bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
         for (int i = 0; i < no_of_round_mols; ++i)
         {
             //manager.
-            create (1, ROUND_MOL, (mol1->speed_ + mol2->speed_) / 2, 1.0, color, v, new_mol_pos);
+            create (1, ROUND_MOL, (mol1->speed_ + mol2->speed_) / 2, 1.0, ROUND_COLOR, v, new_mol_pos);
             v.rotate (360.0 / no_of_round_mols);
             new_mol_pos = collide_pos + v; 
         }
@@ -295,7 +292,7 @@ bool Mol_manager::collide_squares (Mol *mol1, Mol *mol2)
 // bool collide_rounds (Mol_manager &manager, Mol *mol1, Mol *mol2)
 bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
 {
-    Color color (0, 255, 0, 255);
+    // Color color (0, 255, 0, 255);
 
     const double R = ((Round_mol *)mol1)->RADIUS;
     Point center_1 (mol1->pos_.x_ + R, mol1->pos_.y_ + R);
@@ -307,7 +304,7 @@ bool Mol_manager::collide_rounds (Mol *mol1, Mol *mol2)
         Vector pos = (mol1->pos_ + mol2->pos_) && 0.5;
 
         // manager.
-        create (1, SQUARE_MOL, (mol1->speed_ + mol2->speed_) / (int)(mol1->mass_ + mol2->mass_), mol1->mass_ + mol2->mass_, color, v, pos);
+        create (1, SQUARE_MOL, (mol1->speed_ + mol2->speed_) / (int)(mol1->mass_ + mol2->mass_), mol1->mass_ + mol2->mass_, SQUARE_COLOR, v, pos);
         // m = 1 + 1 
         return true;
     }
@@ -324,7 +321,7 @@ bool Mol_manager::collide_round_square (Mol *mol1, Mol *mol2)
 // bool collide_square_round (Mol_manager &manager, Mol *mol1, Mol *mol2)
 bool Mol_manager::collide_square_round (Mol *mol1, Mol *mol2)
 {
-    Color color (0, 255, 0, 255);
+    // Color color (0, 255, 0, 255);
     
     const double R = ((Round_mol *)mol1)->RADIUS;           //think about making static
     const double SIDE = ((Square_mol *)mol2)->SIDE_SIZE;    //the same
@@ -348,7 +345,7 @@ bool Mol_manager::collide_square_round (Mol *mol1, Mol *mol2)
         double speed = (mol1->speed_ * mol1->mass_ + mol2->speed_ * mol2->mass_) / new_mol_mass;
 
         // manager.
-        create (1, SQUARE_MOL, speed, new_mol_mass, color, v, pos); // m= m + 1
+        create (1, SQUARE_MOL, speed, new_mol_mass, SQUARE_COLOR, v, pos); // m= m + 1
 
         return true;
     }
@@ -405,7 +402,7 @@ bool Mol_manager::update_temperature (double delta_temp)
         mol->update_speed (mol->get_speed () * mult_coeff);
     }
 
-    update_height (0.3 * (height_ * mult_coeff - height_));
+    // update_height (0.3 * (height_ * mult_coeff - height_)); ????
 
     temperature_ = new_temp;
 }
