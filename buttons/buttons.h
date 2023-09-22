@@ -87,14 +87,15 @@ protected:
     sf::Texture *cur_texture_ = nullptr;
     sf::Texture &pressed_texture_;
     sf::Texture &released_texture_;
+    sf::Sprite *sprite = nullptr;
 
 public:
     Texture_button (Point lh_corner, Point rl_corner, sf::Texture &pressed, sf::Texture &released) : 
                     Button (lh_corner, rl_corner),
                     pressed_texture_ (pressed),
                     released_texture_ (released) 
-                    {cur_texture_ = &released_texture_;};
-    ~Texture_button () override {};
+                    {cur_texture_ = &released_texture_; sprite = new sf::Sprite;};
+    ~Texture_button () override {delete sprite;};
 
     void draw (sf::RenderWindow &window, int screen_w, int screen_h)const override;
     void update (bool is_pressed) override final;
@@ -168,61 +169,46 @@ public:
     // bool resize ();
 };
 
-// class Piston_button : public Button 
-// {
-//     Mol_manager *mol_manager_ = nullptr;
-//     const double delta_height = 1;
+class Square_mol_button : public Texture_button 
+{
+    Mol_manager *mol_manager_ = nullptr;
+    const double delta_mols = 10;
 
-// public:
-//     Piston_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, 
-//                    Color pressed_button_clr = Color (0, 0, 0,0), sf::Texture *texture = nullptr) :
-//                     mol_manager_ (&mol_manager),
-//                     Button (lh_corner, rl_corner, color, string, button_use, pressed_button_clr, texture){};
-//     ~Piston_button () {};
+public:
+    Square_mol_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, sf::Texture &pressed, sf::Texture &released) :
+                       mol_manager_ (&mol_manager),
+                       Texture_button (lh_corner, rl_corner, pressed, released){};
+    ~Square_mol_button () override {};
 
-//     bool run (Point &object, sf::Keyboard::Key key) override;
-// };
+    bool run (Point &object, sf::Keyboard::Key key) override;
+};
 
-// class Square_mol_button : public Button 
-// {
-//     Mol_manager *mol_manager_ = nullptr;
-//     const double delta_mols = 10;
+class Round_mol_button : public Texture_button 
+{
+    Mol_manager *mol_manager_ = nullptr;
+    const double delta_mols = 10;
 
-// public:
-//     Square_mol_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, Color pressed_button_clr = Color (0, 0, 0,0)) :
-//                                                         mol_manager_ (&mol_manager),
-//                                                         Button (lh_corner, rl_corner, color, string, button_use, pressed_button_clr){};
-//     ~Square_mol_button () {};
+public:
+    Round_mol_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, sf::Texture &pressed, sf::Texture &released) :
+                      mol_manager_ (&mol_manager),
+                      Texture_button (lh_corner, rl_corner, pressed, released){};
+    ~Round_mol_button () override {};
 
-//     bool run (Point &object, sf::Keyboard::Key key) override;
-// };
+    bool run (Point &object, sf::Keyboard::Key key) override;
+};
 
-// class Round_mol_button : public Button 
-// {
-//     Mol_manager *mol_manager_ = nullptr;
-//     const double delta_mols = 10;
+class Temp_button : public Texture_button
+{
+    Mol_manager *mol_manager_ = nullptr;
+    const double delta_temp = 10;
 
-// public:
-//     Round_mol_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, Color pressed_button_clr = Color (0, 0, 0,0)) :
-//                                                         mol_manager_ (&mol_manager),
-//                                                         Button (lh_corner, rl_corner, color, string, button_use, pressed_button_clr){};
-//     ~Round_mol_button () {};
+public:
+    Temp_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, sf::Texture &pressed, sf::Texture &released) :
+                 mol_manager_ (&mol_manager),
+                 Texture_button (lh_corner, rl_corner, pressed, released){};
+    ~Temp_button () {};
 
-//     bool run (Point &object, sf::Keyboard::Key key) override;
-// };
-
-// class Temp_button : public Button
-// {
-//     Mol_manager *mol_manager_ = nullptr;
-//     const double delta_temp = 10;
-
-// public:
-//     Temp_button (Mol_manager &mol_manager, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use, Color pressed_button_clr = Color (0, 0, 0,0)) :
-//                                                         mol_manager_ (&mol_manager),
-//                                                         Button (lh_corner, rl_corner, color, string, button_use, pressed_button_clr){};
-//     ~Temp_button () {};
-
-//     bool run (Point &object, sf::Keyboard::Key key) override;
-// };
+    bool run (Point &object, sf::Keyboard::Key key) override;
+};
 
 #endif /* BUTTONS_H */
