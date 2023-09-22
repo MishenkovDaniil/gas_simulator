@@ -9,16 +9,22 @@
 
 static const int WINDOW_WIDTH = 800;
 static const int WINDOW_HEIGHT = 800;
-static const int DELTA_BUTTON_HEIGHT = 50;
-static const int DELTA_BUTTON_WIDTH = 100;
+static const int DELTA_BUTTON_HEIGHT = 80;
+static const int DELTA_BUTTON_WIDTH = 80;
 
 static const Color PURPLE = Color (255, 0, 255, 255);
 static const Color GREEN  = Color (0, 255, 0, 255);
 static const Color RED    = Color (255, 0, 0, 255);
 static const Color BLUE   = Color (0, 0, 255, 255);
+static const Color TREE   = Color (105, 85, 50, 255);
 
 static const int PISTON_THICKNESS = 40;
 static const int PISTON_HEIGHT = 100;
+
+static const char *PISTON_IMG = "buttons/imgs/piston_.jpg";
+static const char *CIRCLE_IMG = "buttons/imgs/CIRCLE.jpg";
+static const char *SQUARE_IMG = "buttons/imgs/SQUARE.jpg";
+static const char *TEMP_IMG   = "buttons/imgs/TEMP.jpg";
 
 int main ()
 {
@@ -34,7 +40,7 @@ int main ()
 
     Point piston_lh (0, PISTON_HEIGHT);
     Point piston_rl (WINDOW_WIDTH, PISTON_HEIGHT);
-
+    
     Wall low (ll, rl, texture);
     Wall left (lh, ll, texture);
     Wall right (rh, rl, texture);
@@ -56,21 +62,31 @@ int main ()
 
     int button_start_x = 0;
 
+
+    sf::Texture piston_img_texture;
+    sf::Texture circle_img_texture;
+    sf::Texture square_img_texture;
+    sf::Texture temp_img_texture;
+    piston_img_texture.loadFromFile (PISTON_IMG);
+    circle_img_texture.loadFromFile (CIRCLE_IMG);
+    square_img_texture.loadFromFile (SQUARE_IMG);
+      temp_img_texture.loadFromFile  (TEMP_IMG);
+
     Piston_button piston_button         (mol_manager, Point (button_start_x, WINDOW_HEIGHT), 
-                                                      Point (100, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
-                                                      PURPLE, "PISTON", NONE, GREEN);
+                                                      Point (80, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
+                                                      piston_img_texture, piston_img_texture);
                                                       ///button_start_x = 1 * DELTA_BUTTON_WIDTH
-    Square_mol_button square_mol_button (mol_manager, Point (100, WINDOW_HEIGHT), 
-                                                      Point (200, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
-                                                      PURPLE, "ADD SQUARE", NONE);
+    Square_mol_button square_mol_button (mol_manager, Point (80, WINDOW_HEIGHT), 
+                                                      Point (160, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
+                                                      square_img_texture, square_img_texture);
                                                       ///button_start_x = 2 * DELTA_BUTTON_WIDTH
-    Round_mol_button round_mol_button   (mol_manager, Point (200, WINDOW_HEIGHT),
-                                                      Point (300, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
-                                                      PURPLE, "ADD ROUND", NONE);
+    Round_mol_button round_mol_button   (mol_manager, Point (160, WINDOW_HEIGHT),
+                                                      Point (240, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
+                                                      circle_img_texture, circle_img_texture);
                                                       ///button_start_x = 3 * DELTA_BUTTON_WIDTH
-    Temp_button      temp_button        (mol_manager, Point (300, WINDOW_HEIGHT),
-                                                      Point (400, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
-                                                      PURPLE, "TEMP", NONE, GREEN);
+    Temp_button      temp_button        (mol_manager, Point (240, WINDOW_HEIGHT),
+                                                      Point (320, WINDOW_HEIGHT + DELTA_BUTTON_HEIGHT),
+                                                      temp_img_texture, temp_img_texture);
     button_manager.add (&piston_button);
     button_manager.add (&square_mol_button);
     button_manager.add (&round_mol_button);
@@ -93,7 +109,7 @@ int main ()
                      (event.mouseButton.x || event.mouseButton.y))
             {
                 Button *pressed_button = button_manager.contains(event.mouseButton.x, event.mouseButton.y);
-                fprintf (stderr, "[%p]\n", pressed_button);
+
                 if (pressed_button)
                 {   
                     pressed_button->update (!(pressed_button->get_status ()));
@@ -117,9 +133,6 @@ int main ()
         window.display();
 
         mol_manager.move ();
-        // mol_manager.update_height (-10);
-
-        // mol_manager.update_temperature (mol_manager.get_temperature () + 1);
     }
     
     return 0;
