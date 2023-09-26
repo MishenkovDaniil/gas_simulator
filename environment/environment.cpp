@@ -14,10 +14,10 @@ bool Wall::contains (const Point &obj)
     return false;
 }
 
-void Piston::update (int new_height)
+void Piston::update (int delta_height)
 {
-    left_high_.y_ = new_height;
-    right_low_.y_ = new_height;
+    left_high_.y_ -= delta_height;
+    right_low_.y_ -= delta_height;
 }
 
 void Wall::draw (sf::RenderTexture &texture) const
@@ -48,6 +48,6 @@ Wall *Walls::contains (Point &obj)
             return walls[idx];
         }
     }
-    
+
     return nullptr;
 }

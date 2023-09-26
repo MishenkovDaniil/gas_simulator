@@ -5,8 +5,9 @@
 #include <cassert>
 #include <SFML/Graphics.hpp>
 
-// #include "../buttons/buttons.h"
-#include "../graphic_structures/graphic_structures.h"
+#include "../graphic_structures/color/color.h"
+#include "../graphic_structures/point/point.h"
+#include "../graphic_structures/vector/vector.h"
 
 
 class Wall 
@@ -29,8 +30,8 @@ public:
     ~Wall () {;};
 
     bool contains (const Point &obj);
-    void draw (sf::RenderTexture &texture) const;//TODO
-    virtual void update (int new_height) {};
+    void draw (sf::RenderTexture &texture) const; //TODO
+    virtual void update (int delta_height) {};
 };
 
 class Piston : public Wall 
@@ -39,7 +40,7 @@ public:
     Piston (Point &lh, Point &rl, sf::RenderTexture &texture, int thickness = 20) : Wall (lh, rl, texture, thickness) {};
     ~Piston () {};
 
-    void update (int new_height) override;
+    void update (int delta_height) override;
 };
 
 class Walls
@@ -57,22 +58,7 @@ public:
     void add (Wall *wall) {walls[size_++] = wall;};
     Wall *contains (Point &obj);
     void draw () {for (int i = 0; i < size_; ++i) walls[i]->draw (*texture_);};
-    void update_piston_height (int new_height) {for (int i = 0; i < size_; ++i) walls[i]->update (new_height);}
+    void update_piston_height (int delta_height) {for (int i = 0; i < size_; ++i) walls[i]->update (delta_height);}
 };
-
-
-// class Move_piston_button : public Button 
-// {
-//     Piston *piston_ = nullptr;
-//     const double delta_height = 1;
-
-// public:
-//     Move_piston_button (Piston &piston, Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use) :
-//                                                         piston_ (&piston),
-//                                                         Button (lh_corner, rl_corner, color, string, button_use){};
-//     ~Move_piston_button () {};
-
-//     bool run (Point &object, sf::Keyboard::Key key) override;
-// };
 
 #endif /* ENVIRONMENT_H */
