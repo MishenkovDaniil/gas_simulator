@@ -1,62 +1,19 @@
 #ifndef BUTTONS_H
 #define BUTTONS_H
 
- class Piston;
- class Mol_manager;
+class Piston;
+class Mol_manager;
 
 #include <SFML/Graphics.hpp>
+
+#include "../graphic_structures/color/color.h"
+#include "../graphic_structures/point/point.h"
+#include "../graphic_structures/vector/vector.h"
 #include "../environment/environment.h"
-#include "../graphic_structures/graphic_structures.h"
 #include "../mol/mol.h"
 
+static const int START_CAPACITY = 10;
 //virtual function draw: one for drawing picture inside button, one for text button,etc.
-//button manager: array of pointers to buttons, checks if some button is pressed, cause action for pressed button,, draws all buttons at once 
-
-// class Button 
-// {
-// protected:
-//     Point lh_corner_ = Point (0, 0); /// z coord is not used
-//     Point rl_corner_ = Point (0, 0); /// z coord is not used
-    
-//     // Color color_                = Color ();
-//     // Color pressed_button_color  = Color ();
-//     // Color released_button_color = Color ();
-    
-//     // int  button_use_ = NONE; //
-//     bool is_pressed_ = false;
-
-//     // char *string_ = nullptr;
-//     // int str_size = 0;
-
-//     // sf::Texture *texture_ = nullptr;
-
-// public:
-//     Button () {;};
-//     Button (Point lh_corner, Point rl_corner, Color color, const char *string, const int button_use,
-//             Color pressed_button_clr = Color (0, 0, 0,0), sf::Texture *texture = nullptr) :
-//             lh_corner_             (lh_corner), 
-//             rl_corner_             (rl_corner),
-//             button_use_            (button_use),//
-//             color_                 (color),
-//             released_button_color  (color),
-//             pressed_button_color   (pressed_button_clr.a_ ? pressed_button_clr : color),
-//             is_pressed_            (false),
-//             texture_               (texture)
-//             {str_size = std::strlen(string);
-//                 string_ = new char[str_size + 1];
-//                 assert (string_);
-//                 std::strcpy (string_, string); 
-//             };
-//     ~Button () {if (string_) delete[] string_;};
-
-//     virtual void draw (sf::RenderWindow &window, int screen_w, int screen_h)const;
-//     void update (bool is_pressed);
-//     bool get_status () const {return is_pressed_;};
-//     bool contains (double x, double y) const;
-//     int get_button_use () const {return button_use_;};
-//     virtual bool run (Point &object, sf::Keyboard::Key key) = 0;
-// };
-
 
 class Button 
 {
@@ -94,7 +51,8 @@ public:
                     Button (lh_corner, rl_corner),
                     pressed_texture_ (pressed),
                     released_texture_ (released) 
-                    {cur_texture_ = &released_texture_; sprite = new sf::Sprite;};
+                    {cur_texture_ = &released_texture_;
+                    sprite = new sf::Sprite;};
     ~Texture_button () override {delete sprite;};
 
     void draw (sf::RenderWindow &window, int screen_w, int screen_h)const override;
@@ -131,7 +89,6 @@ public:
     bool run (Point &object, sf::Keyboard::Key key) override = 0;
 };
 
-
 class Piston_button : public Texture_button 
 {
     Mol_manager *mol_manager_ = nullptr;
@@ -145,7 +102,6 @@ public:
 
     bool run (Point &object, sf::Keyboard::Key key) override;
 };
-
 
 class Button_manager 
 {

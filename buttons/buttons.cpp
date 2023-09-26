@@ -70,6 +70,7 @@ bool Button_manager::run (Point object, sf::Keyboard::Key key)
     {
         (*(buttons_p + idx))->run (object, key);
     }
+    return true;
 }
 
 Button_manager::~Button_manager ()
