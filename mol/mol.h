@@ -176,6 +176,7 @@
 #include "../graphic_structures/point/point.h"
 #include "../graphic_structures/vector/vector.h"
 #include "../environment/environment.h"
+#include "../vector.h"
 
 class Mol;
 class Mol_manager;
@@ -286,7 +287,8 @@ class Mol_manager
     //TODO 
     //connect mols with list.h 
     sf::RenderTexture *texture_;
-    Mol **mols = nullptr;
+    M_vector<Mol *> mols = M_vector<Mol *> (nullptr);
+
     Walls walls;
 
     int size_ = 0;
@@ -310,14 +312,14 @@ public:
     bool create (int size, enum Mol_types type);
     bool create (int size, enum Mol_types type, double speed, double mass, const Color &color, Vector &v, Vector &pos, double molecul_size = 0);
     void update_height (int delta_height);
-    void remove (Mol *mol);
+    void remove (Mol *mol, int idx);
     bool update_temperature (double delta_temp);
     double get_temperature () const {return temperature_;};
     int get_mol_num (Mol_types type);
 
 private:
     bool check_collisions ();
-    bool collide (Mol *mol1, Mol *mol2);
+    bool collide (Mol *mol1, Mol *mol2, int idx_1, int idx_2);
     void wall_collide (Mol *mol, Wall *wall);
 };
 
